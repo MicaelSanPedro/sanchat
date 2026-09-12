@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SanChat</string>
+
+    <!-- Conversations -->
+    <string name="conversations_title">SanChat</string>
+    <string name="new_conversation">New conversation</string>
+    <string name="no_conversations">No conversations yet.\nTap + to start chatting with AI.</string>
+    <string name="rename">Rename</string>
+    <string name="delete">Delete</string>
+    <string name="delete_conversation_title">Delete conversation?</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="settings">Settings</string>
+
+    <!-- Chat -->
+    <string name="hint_message">Message…</string>
+    <string name="send">Send</string>
+    <string name="thinking">Thinking…</string>
+    <string name="reasoning">Reasoning</string>
+    <string name="stop">Stop</string>
+    <string name="select_model">Select model</string>
+    <string name="empty_chat">Ask anything!\n\nYou can switch models in the top bar.</string>
+    <string name="error_prefix">Error: %s</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="backend_url">Proxy URL (Vercel)</string>
+    <string name="backend_url_hint">https://your-project.vercel.app</string>
+    <string name="access_token">Access token (optional)</string>
+    <string name="language">Language</string>
+    <string name="lang_portuguese">Portuguese</string>
+    <string name="lang_english">English</string>
+    <string name="clear_conversations">Delete all conversations</string>
+    <string name="clear_conversations_confirm">Delete ALL conversations? This cannot be undone.</string>
+    <string name="saved">Saved</string>
+    <string name="setup_warning">SanChat needs a proxy to talk to NVIDIA NIM.\nOpen Settings and paste your Vercel URL.\nSee the project README for the free setup guide.</string>
+    <string name="open_settings">Open settings</string>
+</resources>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SanChat</string>
+
+    <!-- Conversas -->
+    <string name="conversations_title">SanChat</string>
+    <string name="new_conversation">Nova conversa</string>
+    <string name="no_conversations">Nenhuma conversa ainda.\nToque no + para conversar com a IA.</string>
+    <string name="rename">Renomear</string>
+    <string name="delete">Apagar</string>
+    <string name="delete_conversation_title">Apagar conversa?</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Salvar</string>
+    <string name="settings">Configurações</string>
+
+    <!-- Chat -->
+    <string name="hint_message">Mensagem…</string>
+    <string name="send">Enviar</string>
+    <string name="thinking">Pensando…</string>
+    <string name="reasoning">Raciocínio</string>
+    <string name="stop">Parar</string>
+    <string name="select_model">Selecionar modelo</string>
+    <string name="empty_chat">Pergunte qualquer coisa!\n\nVocê pode trocar de modelo na barra de cima.</string>
+    <string name="error_prefix">Erro: %s</string>
+
+    <!-- Configurações -->
+    <string name="settings_title">Configurações</string>
+    <string name="backend_url">URL do proxy (Vercel)</string>
+    <string name="backend_url_hint">https://seu-projeto.vercel.app</string>
+    <string name="access_token">Token de acesso (opcional)</string>
+    <string name="language">Idioma</string>
+    <string name="lang_portuguese">Português</string>
+    <string name="lang_english">Inglês</string>
+    <string name="clear_conversations">Apagar todas as conversas</string>
+    <string name="clear_conversations_confirm">Apagar TODAS as conversas? Não dá para desfazer.</string>
+    <string name="saved">Salvo</string>
+    <string name="setup_warning">O SanChat precisa de um proxy para falar com a NVIDIA NIM.\nAbra as Configurações e cole a URL da sua Vercel.\nVeja o README do projeto para o guia gratuito.</string>
+    <string name="open_settings">Abrir configurações</string>
+</resources>

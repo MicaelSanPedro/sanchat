@@ -1,0 +1,72 @@
+name: Build APK (Release)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.7'
+
+      - name: Inject backend URL (optional)
+        if: ${{ vars.BACKEND_URL != '' }}
+        run: echo "BACKEND_URL=${{ vars.BACKEND_URL }}" >> gradle.properties
+
+      - name: Inject app token (optional)
+        if: ${{ secrets.APP_TOKEN != '' }}
+        run: echo "APP_TOKEN=${{ secrets.APP_TOKEN }}" >> gradle.properties
+
+      - name: Build release APK
+        run: gradle assembleRelease --no-daemon --stacktrace
+
+      - name: Prepare APK
+        run: |
+          mkdir -p out
+          cp app/build/outputs/apk/release/app-release.apk out/SanChat-v1.0.0.apk
+
+      - name: Publish Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0
+          name: SanChat v1.0.0
+          body: |
+            ## SanChat v1.0.0
+
+            APK assinado e pronto para instalar (Android 10+).
+
+            **Chat com IA (NVIDIA NIM) via proxy Vercel — a chave da API nunca fica no app.**
+
+            ### Recursos
+            - Streaming de resposta em tempo real
+            - 6 modelos: Llama 3.3 70B, Nemotron 70B, DeepSeek R1, Gemma 2 27B, Qwen 2.5 Coder, Mistral Large 2
+            - Multi-conversa com historico (renomear/apagar)
+            - Modo raciocinio: ve o "pensamento" do DeepSeek R1 numa caixa propria
+            - Respostas em markdown (codigos, listas, links)
+            - Interface bilíngue: portugues (padrao) ou ingles
+            - Tema dark premium com o verde NVIDIA
+
+            ### Configuracao do proxy (gratuito)
+            1. Peca sua chave em build.nvidia.com (gratis)
+            2. Importe este repo na Vercel e adicione a env NVIDIA_API_KEY
+            3. Cole a URL da Vercel nas Configuracoes do app
+            Passo a passo completo no README.
+          files: out/SanChat-v1.0.0.apk
+          make_latest: true

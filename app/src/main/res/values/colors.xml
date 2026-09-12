@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="nc_green">#76B900</color>
+    <color name="nc_green_dim">#4E7B00</color>
+    <color name="nc_bg">#121212</color>
+    <color name="nc_surface">#1E1E1E</color>
+    <color name="nc_surface_alt">#232323</color>
+    <color name="nc_bubble_user">#1F2E0C</color>
+    <color name="nc_bubble_ai">#242424</color>
+    <color name="nc_think_bg">#191919</color>
+    <color name="nc_text">#EAEAEA</color>
+    <color name="nc_text_dim">#9A9A9A</color>
+    <color name="nc_stroke">#323232</color>
+</resources>
