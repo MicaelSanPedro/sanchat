@@ -3,7 +3,7 @@ package com.sanchat.app.model
 data class Message(
     var role: String,          // "user" | "assistant"
     var content: String,
-    var thinking: String = ""  // raciocinio do modelo (DeepSeek-R1), se houver
+    var thinking: String = ""  // raciocinio do modelo (reasoning_content), se houver
 )
 
 data class Conversation(
@@ -27,17 +27,19 @@ data class Conversation(
 }
 
 object Models {
-    const val DEFAULT = "meta/llama-3.3-70b-instruct"
+    const val DEFAULT = "nvidia/nemotron-3-ultra-550b-a55b"
 
     data class Entry(val id: String, val label: String)
 
+    // Catalogo 2026 da NIM — testados com chamada real em 13/09/2026.
+    // (A NVIDIA aposenta modelos: os originais v1.0.0 viraram 410/404.)
     val ALL = listOf(
-        Entry("meta/llama-3.3-70b-instruct", "Llama 3.3 70B — geral"),
-        Entry("nvidia/llama-3.1-nemotron-70b-instruct", "Nemotron 70B — NVIDIA"),
-        Entry("deepseek-ai/deepseek-r1", "DeepSeek R1 — raciocinio"),
-        Entry("google/gemma-2-27b-it", "Gemma 2 27B — Google"),
-        Entry("qwen/qwen2.5-coder-32b-instruct", "Qwen 2.5 Coder 32B — codigo"),
-        Entry("mistralai/mistral-large-2-instruct", "Mistral Large 2")
+        Entry("nvidia/nemotron-3-ultra-550b-a55b", "Nemotron 3 Ultra 550B — NVIDIA"),
+        Entry("deepseek-ai/deepseek-v4-flash-0731", "DeepSeek V4 Flash — raciocinio"),
+        Entry("nvidia/nemotron-3.5-lightning-30b-a3b", "Nemotron 3.5 Lightning — rapido"),
+        Entry("z-ai/glm-5.3-flash", "GLM 5.3 Flash — Z.ai"),
+        Entry("openai/gpt-oss-20b", "GPT-OSS 20B — OpenAI"),
+        Entry("google/gemma-4-31b-it", "Gemma 4 31B — Google")
     )
 
     fun labelOf(id: String): String = ALL.firstOrNull { it.id == id }?.label ?: id

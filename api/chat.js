@@ -15,13 +15,14 @@ export const config = { runtime: 'edge' };
 const NIM_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
 
 // Allowlist: so estes modelos podem ser pedidos ao proxy.
+// Catalogo 2026 da NIM — validados com chamada real em 13/09/2026.
 const ALLOWED_MODELS = new Set([
-  'meta/llama-3.3-70b-instruct',
-  'nvidia/llama-3.1-nemotron-70b-instruct',
-  'deepseek-ai/deepseek-r1',
-  'google/gemma-2-27b-it',
-  'qwen/qwen2.5-coder-32b-instruct',
-  'mistralai/mistral-large-2-instruct',
+  'nvidia/nemotron-3-ultra-550b-a55b',
+  'deepseek-ai/deepseek-v4-flash-0731',
+  'nvidia/nemotron-3.5-lightning-30b-a3b',
+  'z-ai/glm-5.3-flash',
+  'openai/gpt-oss-20b',
+  'google/gemma-4-31b-it',
 ]);
 
 const MAX_TOKENS_CAP = 2048;

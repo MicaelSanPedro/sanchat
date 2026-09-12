@@ -34,33 +34,45 @@ jobs:
           BACKEND_URL: ${{ vars.BACKEND_URL }}
           APP_TOKEN: ${{ secrets.APP_TOKEN }}
 
+      - name: Read app version
+        id: ver
+        run: |
+          VN=$(grep -oP 'versionName\s*=\s*"\K[^"]+' app/build.gradle.kts)
+          echo "version=$VN" >> "$GITHUB_OUTPUT"
+          echo "Building SanChat v$VN"
+
       - name: Build release APK
         run: gradle assembleRelease --no-daemon --stacktrace
 
       - name: Prepare APK
         run: |
           mkdir -p out
-          cp app/build/outputs/apk/release/app-release.apk out/SanChat-v1.0.0.apk
+          cp app/build/outputs/apk/release/app-release.apk "out/SanChat-v${{ steps.ver.outputs.version }}.apk"
 
       - name: Publish Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.0
-          name: SanChat v1.0.0
+          tag_name: v${{ steps.ver.outputs.version }}
+          name: SanChat v${{ steps.ver.outputs.version }}
           body: |
-            ## SanChat v1.0.0
+            ## SanChat v${{ steps.ver.outputs.version }}
 
             APK assinado e pronto para instalar (Android 10+).
 
             **Chat com IA (NVIDIA NIM) via proxy Vercel — a chave da API nunca fica no app.**
 
+            ### Novidades v1.0.1 — catalogo 2026
+            - A NVIDIA aposentou os 6 modelos originais (o Llama 3.3 70B virou 410 Gone em 26/08; R1, Gemma 2, Qwen 2.5 e Mistral sairam do ar)
+            - Nova escalação, todos validados com chamada real: **Nemotron 3 Ultra 550B** (padrao), **DeepSeek V4 Flash**, **Nemotron 3.5 Lightning**, **GLM 5.3 Flash**, **GPT-OSS 20B** e **Gemma 4 31B**
+            - A caixa de raciocinio agora funciona em 5 dos 6 modelos (reasoning_content nativo)
+
             ### Recursos
             - Streaming de resposta em tempo real
-            - 6 modelos: Llama 3.3 70B, Nemotron 70B, DeepSeek R1, Gemma 2 27B, Qwen 2.5 Coder, Mistral Large 2
+            - 6 modelos pra trocar na hora
             - Multi-conversa com historico (renomear/apagar)
-            - Modo raciocinio: ve o "pensamento" do DeepSeek R1 numa caixa propria
+            - Ve o "pensamento" do modelo numa caixa propria, em tempo real
             - Respostas em markdown (codigos, listas, links)
-            - Interface bilíngue: portugues (padrao) ou ingles
+            - Interface bilingue: portugues (padrao) ou ingles
             - Tema dark premium com o verde NVIDIA
 
             ### Configuracao do proxy (gratuito)
@@ -68,5 +80,5 @@ jobs:
             2. Importe este repo na Vercel e adicione a env NVIDIA_API_KEY
             3. Cole a URL da Vercel nas Configuracoes do app
             Passo a passo completo no README.
-          files: out/SanChat-v1.0.0.apk
+          files: out/SanChat-v${{ steps.ver.outputs.version }}.apk
           make_latest: true

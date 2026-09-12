@@ -7,13 +7,14 @@ Chat com IA para Android (10+) usando a **NVIDIA NIM** através de um **proxy gr
 ## Recursos
 
 - ⚡ **Streaming em tempo real** — resposta aparece palavra por palavra
-- 🧠 **6 modelos** pra trocar na hora:
-  - Llama 3.3 70B (geral)
-  - Nemotron 70B (NVIDIA)
-  - **DeepSeek R1** (raciocínio — com caixa de "pensamento" expansível!)
-  - Gemma 2 27B (Google)
-  - Qwen 2.5 Coder 32B (código)
-  - Mistral Large 2
+- 🧠 **6 modelos** pra trocar na hora (catálogo 2026 da NIM):
+  - **Nemotron 3 Ultra 550B** (NVIDIA — padrão)
+  - **DeepSeek V4 Flash** (raciocínio)
+  - Nemotron 3.5 Lightning 30B (turbo)
+  - GLM 5.3 Flash (Z.ai)
+  - GPT-OSS 20B (OpenAI)
+  - Gemma 4 31B (Google)
+- 🤔 **Caixa de "pensamento" expansível** — 5 dos 6 modelos mostram o raciocínio em tempo real
 - 💬 **Multi-conversa** com histórico: criar, renomear, apagar
 - 📝 Respostas em **markdown** (código, listas, links)
 - 🌎 **Bilíngue**: português (padrão) ou inglês — troca nas Configurações
