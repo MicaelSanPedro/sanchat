@@ -3,6 +3,7 @@ package com.sanchat.app.store
 import android.content.Context
 import com.sanchat.app.model.Conversation
 import com.sanchat.app.model.Message
+import com.sanchat.app.model.Models
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.UUID
@@ -94,7 +95,7 @@ class Store(context: Context) {
                     title = o.optString("title", ""),
                     createdAt = o.optLong("createdAt", 0L),
                     updatedAt = o.optLong("updatedAt", 0L),
-                    model = o.optString("model", "meta/llama-3.3-70b-instruct"),
+                    model = o.optString("model", Models.DEFAULT),
                     messages = msgs
                 )
             )
