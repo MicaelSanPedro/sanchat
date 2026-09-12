@@ -61,10 +61,12 @@ jobs:
 
             **Chat com IA (NVIDIA NIM) via proxy Vercel — a chave da API nunca fica no app.**
 
-            ### Novidades v1.0.1 — catalogo 2026
-            - A NVIDIA aposentou os 6 modelos originais (o Llama 3.3 70B virou 410 Gone em 26/08; R1, Gemma 2, Qwen 2.5 e Mistral sairam do ar)
-            - Nova escalação, todos validados com chamada real: **Nemotron 3 Ultra 550B** (padrao), **DeepSeek V4 Flash**, **Nemotron 3.5 Lightning**, **GLM 5.3 Flash**, **GPT-OSS 20B** e **Gemma 4 31B**
-            - A caixa de raciocinio agora funciona em 5 dos 6 modelos (reasoning_content nativo)
+            ### Novidades v1.1.0 — redesign completo
+            - Visual Dark Premium repaginado: splash com logo, bolhas com gradiente NVIDIA, avatar da IA, cards e hierarquia nova
+            - Edge-to-edge de verdade: status bar, barra de navegacao e teclado sem cortes; input acompanha o teclado
+            - Seletor de modelos virou bottom sheet bonito; indicador animado enquanto o modelo pensa; caixa de raciocinio com barra verde e chevron
+            - Arraste a conversa pro lado pra apagar (com Desfazer), copie mensagens com toque longo, tempo relativo nas conversas
+            - Respostas em markdown com blocos de codigo tematizados; transicoes suaves entre telas; layout responsivo (bolhas com largura maxima p/ tablets)
 
             ### Recursos
             - Streaming de resposta em tempo real

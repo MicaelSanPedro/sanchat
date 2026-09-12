@@ -15,9 +15,12 @@ Chat com IA para Android (10+) usando a **NVIDIA NIM** através de um **proxy gr
   - GPT-OSS 20B (OpenAI)
   - Gemma 4 31B (Google)
 - 🤔 **Caixa de "pensamento" expansível** — 5 dos 6 modelos mostram o raciocínio em tempo real
-- 💬 **Multi-conversa** com histórico: criar, renomear, apagar
-- 📝 Respostas em **markdown** (código, listas, links)
+- 💬 **Multi-conversa** com histórico: criar, renomear, **arrastar pra apagar** (com desfazer)
+- 📋 **Copie mensagens** com toque longo | ⌨️ **edge-to-edge** com teclado suave
+- 📝 Respostas em **markdown** (código, listas, links) com blocos tematizados
+- 🎬 Transições suaves, indicador de "pensando" animado e seletor de modelos em bottom sheet
 - 🌎 **Bilíngue**: português (padrão) ou inglês — troca nas Configurações
+- 📱 **Responsivo**: celular, dobrável ou tablet — a interface se adapta
 - 🎨 Tema **dark premium** com o verde NVIDIA (#76B900)
 - 🔒 Arquitetura segura: app → proxy (Vercel) → NIM
 

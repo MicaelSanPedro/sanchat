@@ -5,10 +5,13 @@
     <!-- Conversations -->
     <string name="conversations_title">SanChat</string>
     <string name="new_conversation">New conversation</string>
-    <string name="no_conversations">No conversations yet.\nTap + to start chatting with AI.</string>
+    <string name="welcome_title">Welcome to SanChat</string>
+    <string name="no_conversations">Your conversations live here.\nTap + to start chatting with NVIDIA models.</string>
     <string name="rename">Rename</string>
     <string name="delete">Delete</string>
     <string name="delete_conversation_title">Delete conversation?</string>
+    <string name="conversation_deleted">Conversation deleted</string>
+    <string name="undo">Undo</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="settings">Settings</string>
@@ -20,17 +23,23 @@
     <string name="reasoning">Reasoning</string>
     <string name="stop">Stop</string>
     <string name="select_model">Select model</string>
-    <string name="empty_chat">Ask anything!\n\nYou can switch models in the top bar.</string>
+    <string name="select_model_hint">All models run on NVIDIA NIM — free</string>
+    <string name="empty_chat_title">Ask anything</string>
+    <string name="empty_chat_body">Pick a model in the top bar and start.\nYou can switch models anytime.</string>
+    <string name="copied">Copied</string>
+    <string name="scroll_to_bottom">Scroll to latest</string>
     <string name="error_prefix">Error: %s</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
+    <string name="sec_connection">Connection</string>
     <string name="backend_url">Proxy URL (Vercel)</string>
     <string name="backend_url_hint">https://your-project.vercel.app</string>
     <string name="access_token">Access token (optional)</string>
     <string name="language">Language</string>
     <string name="lang_portuguese">Portuguese</string>
     <string name="lang_english">English</string>
+    <string name="sec_danger">Danger zone</string>
     <string name="clear_conversations">Delete all conversations</string>
     <string name="clear_conversations_confirm">Delete ALL conversations? This cannot be undone.</string>
     <string name="saved">Saved</string>

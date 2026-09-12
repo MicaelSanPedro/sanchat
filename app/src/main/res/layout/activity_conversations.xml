@@ -1,29 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/nc_bg"
     android:orientation="vertical">
 
+    <!-- Cabecalho -->
     <LinearLayout
+        android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="20dp"
-        android:paddingRight="8dp"
-        android:paddingTop="14dp"
-        android:paddingBottom="14dp">
+        android:paddingRight="10dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_logo" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginLeft="10dp"
             android:text="@string/conversations_title"
-            android:textColor="@color/nc_green"
-            android:textSize="26sp"
-            android:textStyle="bold" />
+            android:textColor="@color/nc_text"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.01" />
 
         <ImageButton
             android:id="@+id/btnSettings"
@@ -33,6 +44,11 @@
             android:contentDescription="@string/settings"
             android:src="@drawable/ic_settings" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/nc_stroke" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -44,28 +60,62 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingBottom="96dp" />
+            android:layoutAnimation="@anim/item_fall"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="110dp" />
 
-        <TextView
+        <!-- Estado vazio -->
+        <LinearLayout
             android:id="@+id/tvEmpty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="@string/no_conversations"
-            android:textColor="@color/nc_text_dim"
-            android:textSize="16sp"
-            android:lineSpacingExtra="4dp" />
+            android:orientation="vertical"
+            android:paddingLeft="36dp"
+            android:paddingRight="36dp">
+
+            <ImageView
+                android:layout_width="92dp"
+                android:layout_height="92dp"
+                android:alpha="0.22"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_logo" />
+
+            <TextView
+                android:id="@+id/tvEmptyTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/welcome_title"
+                android:textColor="@color/nc_text"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvEmptyBody"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="@string/no_conversations"
+                android:textColor="@color/nc_text_dim"
+                android:textSize="14sp"
+                android:lineSpacingExtra="4dp" />
+        </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabNew"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_margin="20dp"
+            android:layout_margin="22dp"
             android:contentDescription="@string/new_conversation"
             android:src="@drawable/ic_add"
             app:backgroundTint="@color/nc_green"
-            app:tint="#0D1300" />
+            app:elevation="6dp"
+            app:tint="@color/nc_on_green" />
     </FrameLayout>
 </LinearLayout>

@@ -1,5 +1,9 @@
 package com.sanchat.app.ui
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,18 +12,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.sanchat.app.R
 import com.sanchat.app.model.Message
 import com.sanchat.app.model.Models
 import com.sanchat.app.net.NimClient
 import com.sanchat.app.store.Store
+import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
+import io.noties.markwon.core.CorePlugin
+import io.noties.markwon.core.MarkwonTheme
 
 class ChatActivity : AppCompatActivity() {
 
@@ -27,11 +39,14 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var conv: com.sanchat.app.model.Conversation
     private lateinit var adapter: MsgAdapter
     private lateinit var markwon: Markwon
-    private lateinit var tvModel: TextView
+    private lateinit var recycler: RecyclerView
     private lateinit var tvSetupWarning: TextView
     private lateinit var etInput: EditText
     private lateinit var btnSend: ImageButton
-    private lateinit var tvEmpty: TextView
+    private lateinit var btnScrollDown: ImageButton
+    private lateinit var tvEmpty: View
+    private lateinit var typingIndicator: View
+    private lateinit var dots: List<View>
 
     private val handler = Handler(Looper.getMainLooper())
     private var client: NimClient? = null
@@ -42,34 +57,77 @@ class ChatActivity : AppCompatActivity() {
     private var thinkBuffer = ""  // somente deltas de "reasoning_content"
     private var pendingUi = false
 
+    // raciocinios expandidos manualmente (sobrevive a rebind)
+    private val expandedThink = mutableSetOf<Message>()
+
+    // animacao dos pontinhos
+    private var dotPhase = 0
+    private val dotRunnable = object : Runnable {
+        override fun run() {
+            if (!::typingIndicator.isInitialized || typingIndicator.visibility != View.VISIBLE) return
+            dotPhase = (dotPhase + 1) % dots.size
+            dots.forEachIndexed { i, d ->
+                d.animate().alpha(if (i == dotPhase) 1f else 0.25f).setDuration(200).start()
+            }
+            handler.postDelayed(this, 280)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.activity_chat)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+
         store = Store(this)
-        markwon = Markwon.create(this)
+        markwon = Markwon.builder(this)
+            .usePlugin(CorePlugin.create())
+            .usePlugin(object : AbstractMarkwonPlugin() {
+                override fun configureTheme(builder: MarkwonTheme.Builder) {
+                    builder
+                        .codeTextColor(Color.parseColor("#9DDB3F"))
+                        .codeBackgroundColor(Color.parseColor("#10130A"))
+                        .codeBlockBackgroundColor(Color.parseColor("#0D0F07"))
+                        .linkColor(Color.parseColor("#9DDB3F"))
+                        .blockQuoteColor(Color.parseColor("#76B900"))
+                        .blockQuoteWidth(3)
+                }
+            })
+            .build()
 
         val id = intent.getStringExtra("id") ?: run { finish(); return }
         conv = store.getConversation(id) ?: run { finish(); return }
 
-        tvModel = findViewById(R.id.tvModel)
         tvSetupWarning = findViewById(R.id.tvSetupWarning)
         etInput = findViewById(R.id.etInput)
         btnSend = findViewById(R.id.btnSend)
+        btnScrollDown = findViewById(R.id.btnScrollDown)
         tvEmpty = findViewById(R.id.tvEmpty)
+        typingIndicator = findViewById(R.id.typingIndicator)
+        dots = listOf(findViewById(R.id.dot1), findViewById(R.id.dot2), findViewById(R.id.dot3))
+        recycler = findViewById(R.id.recyclerMessages)
 
-        val recycler = findViewById<RecyclerView>(R.id.recyclerMessages)
         val lm = LinearLayoutManager(this)
         lm.stackFromEnd = true
         recycler.layoutManager = lm
         adapter = MsgAdapter()
         recycler.adapter = adapter
+        recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) = updateScrollChip()
+        })
 
         findViewById<ImageButton>(R.id.btnBack).setOnClickListener { finish() }
-        findViewById<LinearLayout>(R.id.topBar).setOnClickListener { pickModel() }
+        findViewById<LinearLayout>(R.id.chipModel).setOnClickListener { pickModel() }
 
         btnSend.setOnClickListener {
             if (streaming) client?.cancel() else send()
         }
+        btnScrollDown.setOnClickListener {
+            scrollToBottom()
+            btnScrollDown.visibility = View.GONE
+        }
+
+        applyInsets()
 
         if (store.backendUrl().isBlank()) {
             tvSetupWarning.visibility = View.VISIBLE
@@ -79,14 +137,36 @@ class ChatActivity : AppCompatActivity() {
         updateEmpty()
     }
 
+    /** Edge-to-edge: status bar em cima, teclado/nav bar embaixo. */
+    private fun applyInsets() {
+        val root = findViewById<View>(R.id.root)
+        val topBar = findViewById<View>(R.id.topBar)
+        val inputBar = findViewById<View>(R.id.inputBar)
+        val baseTop = topBar.paddingTop
+        val baseBottom = inputBar.paddingBottom
+        ViewCompat.setOnApplyWindowInsetsListener(root) { _, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+            topBar.setPadding(
+                topBar.paddingLeft, baseTop + bars.top, topBar.paddingRight, topBar.paddingBottom
+            )
+            inputBar.setPadding(
+                inputBar.paddingLeft, inputBar.paddingTop, inputBar.paddingRight,
+                baseBottom + maxOf(bars.bottom, ime.bottom)
+            )
+            insets
+        }
+    }
+
     private fun refreshHeader() {
         findViewById<TextView>(R.id.tvTitle).text =
             if (conv.title.isBlank()) getString(R.string.new_conversation) else conv.title
-        tvModel.text = Models.labelOf(conv.model)
+        findViewById<TextView>(R.id.tvModel).text = Models.labelOf(conv.model)
     }
 
     private fun updateEmpty() {
         tvEmpty.visibility = if (conv.messages.isEmpty()) View.VISIBLE else View.GONE
+        if (conv.messages.isEmpty()) btnScrollDown.visibility = View.GONE
     }
 
     // ---------- envio / stream ----------
@@ -120,6 +200,8 @@ class ChatActivity : AppCompatActivity() {
         ai.thinking = ""
         ai.content = ""
         streaming = true
+        setStreamUi(true)
+        setTyping(true)
 
         val c = NimClient(backend, store.accessToken())
         client = c
@@ -137,6 +219,20 @@ class ChatActivity : AppCompatActivity() {
             onDone = { handler.post { finishStream(ai, null) } },
             onError = { msg -> handler.post { finishStream(ai, msg) } }
         )
+    }
+
+    /** Liga/desliga visual de "streamando" (botao enviar vira parar). */
+    private fun setStreamUi(on: Boolean) {
+        btnSend.setImageResource(if (on) R.drawable.ic_stop else R.drawable.ic_send)
+        btnSend.contentDescription = getString(if (on) R.string.stop else R.string.send)
+    }
+
+    /** Indicador de digitacao (tres pontinhos pulsando). */
+    private fun setTyping(on: Boolean) {
+        val vis = if (on) View.VISIBLE else View.GONE
+        if (typingIndicator.visibility == vis) return
+        typingIndicator.visibility = vis
+        if (on) handler.post(dotRunnable) else handler.removeCallbacks(dotRunnable)
     }
 
     /**
@@ -175,9 +271,11 @@ class ChatActivity : AppCompatActivity() {
         val pos = conv.messages.size - 1
         if (pos >= 0) {
             adapter.notifyItemChanged(pos)
-            val lm = findViewById<RecyclerView>(R.id.recyclerMessages).layoutManager as LinearLayoutManager
+            val lm = recycler.layoutManager as LinearLayoutManager
             val last = lm.findLastVisibleItemPosition()
             if (last >= pos - 1) scrollToBottom()
+            val ai = conv.messages.getOrNull(pos)
+            setTyping(ai != null && ai.content.isBlank() && ai.thinking.isBlank())
         }
     }
 
@@ -190,13 +288,33 @@ class ChatActivity : AppCompatActivity() {
         }
         conv.updatedAt = System.currentTimeMillis()
         store.saveConversation(conv)
+        setTyping(false)
+        setStreamUi(false)
         adapter.notifyDataSetChanged()
         refreshHeader()
+        updateScrollChip()
     }
 
     private fun scrollToBottom() {
-        val r = findViewById<RecyclerView>(R.id.recyclerMessages)
-        r.post { r.smoothScrollToPosition(adapter.itemCount - 1) }
+        recycler.post { recycler.smoothScrollToPosition(adapter.itemCount - 1) }
+    }
+
+    private fun updateScrollChip() {
+        if (conv.messages.isEmpty() || streaming) {
+            btnScrollDown.visibility = View.GONE
+            return
+        }
+        val lm = recycler.layoutManager as? LinearLayoutManager ?: return
+        val last = lm.findLastVisibleItemPosition()
+        btnScrollDown.visibility =
+            if (last != RecyclerView.NO_POSITION && last < adapter.itemCount - 1) View.VISIBLE
+            else View.GONE
+    }
+
+    private fun copyToClipboard(text: String) {
+        val cm = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        cm.setPrimaryClip(ClipData.newPlainText("SanChat", text))
+        Toast.makeText(this, R.string.copied, Toast.LENGTH_SHORT).show()
     }
 
     /** Historico pro modelo: system + ultimas mensagens visiveis (sem thinking). */
@@ -212,21 +330,34 @@ class ChatActivity : AppCompatActivity() {
         return out
     }
 
-    // ---------- seletor de modelo ----------
+    // ---------- seletor de modelo (bottom sheet) ----------
 
     private fun pickModel() {
-        val labels = Models.ALL.map { it.label }.toTypedArray()
-        val checked = Models.ALL.indexOfFirst { it.id == conv.model }
-        AlertDialog.Builder(this)
-            .setTitle(R.string.select_model)
-            .setSingleChoiceItems(labels, if (checked >= 0) checked else 0) { d, which ->
-                conv.model = Models.ALL[which].id
+        val sheet = BottomSheetDialog(this)
+        val v = layoutInflater.inflate(R.layout.sheet_models, null)
+        val ll = v.findViewById<LinearLayout>(R.id.llModels)
+        Models.ALL.forEach { entry ->
+            val row = layoutInflater.inflate(R.layout.item_model, ll, false)
+            val parts = entry.label.split(" — ")
+            val name = row.findViewById<TextView>(R.id.tvModelName)
+            name.text = parts.getOrElse(0) { entry.label }
+            row.findViewById<TextView>(R.id.tvModelBrand).text = parts.getOrElse(1) { "" }
+            val selected = entry.id == conv.model
+            name.setTextColor(
+                if (selected) Color.parseColor("#9DDB3F") else Color.parseColor("#F0F2E8")
+            )
+            row.findViewById<ImageView>(R.id.ivSelected).visibility =
+                if (selected) View.VISIBLE else View.GONE
+            row.setOnClickListener {
+                conv.model = entry.id
                 store.saveConversation(conv)
                 refreshHeader()
-                d.dismiss()
+                sheet.dismiss()
             }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
+            ll.addView(row)
+        }
+        sheet.setContentView(v)
+        sheet.show()
     }
 
     // ---------- adapter ----------
@@ -238,8 +369,10 @@ class ChatActivity : AppCompatActivity() {
 
         inner class AiVH(v: View) : RecyclerView.ViewHolder(v) {
             val thinkBox: LinearLayout = v.findViewById(R.id.thinkBox)
+            val thinkHeaderRow: View = v.findViewById(R.id.thinkHeaderRow)
             val thinkHeader: TextView = v.findViewById(R.id.tvThinkHeader)
             val think: TextView = v.findViewById(R.id.tvThink)
+            val chevron: ImageView = v.findViewById(R.id.ivChevron)
             val md: TextView = v.findViewById(R.id.tvMarkdown)
         }
 
@@ -261,25 +394,42 @@ class ChatActivity : AppCompatActivity() {
             val m = conv.messages[pos]
             if (h is UserVH) {
                 h.text.text = m.content
+                h.text.setOnLongClickListener {
+                    copyToClipboard(m.content)
+                    true
+                }
             } else if (h is AiVH) {
                 val hasThink = m.thinking.isNotBlank()
                 h.thinkBox.visibility = if (hasThink) View.VISIBLE else View.GONE
                 if (hasThink) {
-                    val streamingThis = streaming && pos == conv.messages.size - 1 && m.content.isBlank()
+                    val streamingThis =
+                        streaming && pos == conv.messages.size - 1 && m.content.isBlank()
                     h.thinkHeader.text =
                         if (streamingThis) getString(R.string.thinking) else getString(R.string.reasoning)
-                    if (streamingThis && h.think.visibility != View.VISIBLE) {
-                        h.think.visibility = View.VISIBLE
-                    }
+                    val open = streamingThis || expandedThink.contains(m)
+                    h.think.visibility = if (open) View.VISIBLE else View.GONE
+                    h.chevron.rotation = if (open) 180f else 0f
                     h.think.text = m.thinking
-                    h.thinkHeader.setOnClickListener {
-                        h.think.visibility =
-                            if (h.think.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+                    h.thinkHeaderRow.setOnClickListener {
+                        if (expandedThink.contains(m)) {
+                            expandedThink.remove(m)
+                            h.think.visibility = View.GONE
+                            h.chevron.rotation = 0f
+                        } else {
+                            expandedThink.add(m)
+                            h.think.visibility = View.VISIBLE
+                            h.chevron.rotation = 180f
+                        }
                     }
                 }
                 markwon.setMarkdown(h.md, m.content)
             }
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     override fun onDestroy() {

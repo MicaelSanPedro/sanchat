@@ -11,8 +11,8 @@ android {
         applicationId = "com.sanchat.app"
         minSdk = 29
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.0.1"
+        versionCode = 3
+        versionName = "1.1.0"
 
         // URL do proxy (Vercel) e token opcional — podem vir de gradle.properties
         // (o workflow do GitHub injeta BACKEND_URL das repository variables)

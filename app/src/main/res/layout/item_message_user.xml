@@ -2,8 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="48dp"
-    android:paddingRight="16dp"
+    android:paddingLeft="56dp"
+    android:paddingRight="12dp"
     android:paddingTop="6dp"
     android:paddingBottom="6dp">
 
@@ -12,12 +12,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
+        android:maxWidth="560dp"
         android:background="@drawable/bg_bubble_user"
-        android:paddingLeft="14dp"
-        android:paddingRight="14dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:textColor="@color/nc_text"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="11dp"
+        android:paddingBottom="11dp"
+        android:textColor="@color/nc_user_text"
         android:textSize="15sp"
-        android:textIsSelectable="true" />
+        android:lineSpacingExtra="2dp" />
 </FrameLayout>

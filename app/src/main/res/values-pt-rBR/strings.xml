@@ -5,10 +5,13 @@
     <!-- Conversas -->
     <string name="conversations_title">SanChat</string>
     <string name="new_conversation">Nova conversa</string>
-    <string name="no_conversations">Nenhuma conversa ainda.\nToque no + para conversar com a IA.</string>
+    <string name="welcome_title">Bem-vindo ao SanChat</string>
+    <string name="no_conversations">Suas conversas ficam aqui.\nToque no + para conversar com modelos da NVIDIA.</string>
     <string name="rename">Renomear</string>
     <string name="delete">Apagar</string>
     <string name="delete_conversation_title">Apagar conversa?</string>
+    <string name="conversation_deleted">Conversa apagada</string>
+    <string name="undo">Desfazer</string>
     <string name="cancel">Cancelar</string>
     <string name="save">Salvar</string>
     <string name="settings">Configurações</string>
@@ -20,17 +23,23 @@
     <string name="reasoning">Raciocínio</string>
     <string name="stop">Parar</string>
     <string name="select_model">Selecionar modelo</string>
-    <string name="empty_chat">Pergunte qualquer coisa!\n\nVocê pode trocar de modelo na barra de cima.</string>
+    <string name="select_model_hint">Todos os modelos rodam na NVIDIA NIM — grátis</string>
+    <string name="empty_chat_title">Pergunte qualquer coisa</string>
+    <string name="empty_chat_body">Escolha um modelo na barra de cima e comece.\nVocê pode trocar de modelo quando quiser.</string>
+    <string name="copied">Copiado</string>
+    <string name="scroll_to_bottom">Ir para a última mensagem</string>
     <string name="error_prefix">Erro: %s</string>
 
     <!-- Configurações -->
     <string name="settings_title">Configurações</string>
+    <string name="sec_connection">Conexão</string>
     <string name="backend_url">URL do proxy (Vercel)</string>
     <string name="backend_url_hint">https://seu-projeto.vercel.app</string>
     <string name="access_token">Token de acesso (opcional)</string>
     <string name="language">Idioma</string>
     <string name="lang_portuguese">Português</string>
     <string name="lang_english">Inglês</string>
+    <string name="sec_danger">Zona de perigo</string>
     <string name="clear_conversations">Apagar todas as conversas</string>
     <string name="clear_conversations_confirm">Apagar TODAS as conversas? Não dá para desfazer.</string>
     <string name="saved">Salvo</string>

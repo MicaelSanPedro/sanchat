@@ -1,14 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Verde NVIDIA -->
     <color name="nc_green">#76B900</color>
+    <color name="nc_green_bright">#9DDB3F</color>
     <color name="nc_green_dim">#4E7B00</color>
-    <color name="nc_bg">#121212</color>
-    <color name="nc_surface">#1E1E1E</color>
-    <color name="nc_surface_alt">#232323</color>
-    <color name="nc_bubble_user">#1F2E0C</color>
-    <color name="nc_bubble_ai">#242424</color>
-    <color name="nc_think_bg">#191919</color>
-    <color name="nc_text">#EAEAEA</color>
-    <color name="nc_text_dim">#9A9A9A</color>
-    <color name="nc_stroke">#323232</color>
+    <color name="nc_on_green">#0D1300</color>
+
+    <!-- Fundos (quase-preto com subtom verde) -->
+    <color name="nc_bg">#0B0C09</color>
+    <color name="nc_surface">#15170F</color>
+    <color name="nc_surface_alt">#1C1F13</color>
+
+    <!-- Bolhas -->
+    <color name="nc_bubble_user_start">#3A5200</color>
+    <color name="nc_bubble_user_end">#243500</color>
+    <color name="nc_bubble_user">#243500</color>
+    <color name="nc_bubble_ai">#1B1E12</color>
+    <color name="nc_user_text">#EAFACB</color>
+
+    <!-- Raciocinio -->
+    <color name="nc_think_bg">#121408</color>
+
+    <!-- Texto -->
+    <color name="nc_text">#F0F2E8</color>
+    <color name="nc_text_dim">#A9B09B</color>
+    <color name="nc_text_faint">#6C7360</color>
+
+    <!-- Bordas -->
+    <color name="nc_stroke">#262B1A</color>
+    <color name="nc_stroke_soft">#31371F</color>
+
+    <!-- Extras -->
+    <color name="nc_avatar_bg">#1E2A08</color>
+    <color name="nc_danger">#FF8A80</color>
+    <color name="nc_danger_bg">#2A1210</color>
+    <color name="nc_code_bg">#10130A</color>
+    <color name="nc_green_scrim">#2E76B900</color>
 </resources>

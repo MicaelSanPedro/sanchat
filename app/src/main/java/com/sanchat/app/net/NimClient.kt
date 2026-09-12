@@ -33,7 +33,7 @@ class NimClient(private val baseUrl: String, private val token: String) {
     fun streamChat(
         model: String,
         messages: List<Pair<String, String>>,
-        maxTokens: Int = 1024,
+        maxTokens: Int = 2048,
         onDelta: (String?, String?) -> Unit,
         onDone: () -> Unit,
         onError: (String) -> Unit
