@@ -26,13 +26,13 @@ jobs:
         with:
           gradle-version: '8.7'
 
-      - name: Inject backend URL (optional)
-        if: ${{ vars.BACKEND_URL != '' }}
-        run: echo "BACKEND_URL=${{ vars.BACKEND_URL }}" >> gradle.properties
-
-      - name: Inject app token (optional)
-        if: ${{ secrets.APP_TOKEN != '' }}
-        run: echo "APP_TOKEN=${{ secrets.APP_TOKEN }}" >> gradle.properties
+      - name: Inject optional config (backend URL / app token)
+        run: |
+          if [ -n "$BACKEND_URL" ]; then echo "BACKEND_URL=$BACKEND_URL" >> gradle.properties; fi
+          if [ -n "$APP_TOKEN" ]; then echo "APP_TOKEN=$APP_TOKEN" >> gradle.properties; fi
+        env:
+          BACKEND_URL: ${{ vars.BACKEND_URL }}
+          APP_TOKEN: ${{ secrets.APP_TOKEN }}
 
       - name: Build release APK
         run: gradle assembleRelease --no-daemon --stacktrace
