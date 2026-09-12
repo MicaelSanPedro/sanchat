@@ -3,6 +3,7 @@ package com.sanchat.app
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
+import com.sanchat.app.store.Store
 
 class App : Application() {
 
